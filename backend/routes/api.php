@@ -107,9 +107,19 @@ use HiEvents\Http\Actions\Users\ResendInvitationAction;
 use HiEvents\Http\Actions\Users\UpdateMeAction;
 use HiEvents\Http\Actions\Users\UpdateUserAction;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /** @var Router|Router $router */
 $router = app()->get('router');
+
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toIso8601String(),
+        'database' => DB::select('SELECT 1')[0]->{'1'} === 1 ? 'connected' : 'error'
+    ]);
+});
 
 $router->prefix('/auth')->group(
     function (Router $router): void {
