@@ -32,6 +32,15 @@ fi
 echo "Database configuration:"
 echo "Host: $(echo $DATABASE_URL | sed -E 's/.*@([^:]+).*/\1/')"
 
+# Test database connection
+echo "Testing database connection..."
+if ! php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Connected successfully!'; } catch (\Exception \$e) { echo 'Connection failed: ' . \$e->getMessage(); exit(1); }"; then
+    echo "============================================"
+    echo "ERROR: Database connection test failed"
+    echo "============================================"
+    exit 1
+fi
+
 echo "Running database migrations..."
 if ! php artisan migrate --force; then
     echo "============================================"

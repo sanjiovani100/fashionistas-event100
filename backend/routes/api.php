@@ -113,12 +113,9 @@ use Illuminate\Support\Facades\DB;
 /** @var Router|Router $router */
 $router = app()->get('router');
 
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'timestamp' => now()->toIso8601String(),
-        'database' => DB::select('SELECT 1')[0]->{'1'} === 1 ? 'connected' : 'error'
-    ]);
+// Health check endpoint
+$router->get('/health', function () {
+    return response()->json(['status' => 'ok']);
 });
 
 $router->prefix('/auth')->group(
