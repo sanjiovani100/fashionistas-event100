@@ -58,6 +58,126 @@
 - [Security Best Practices](https://docs.railway.app/reference/security)
 - [Resource Management](https://docs.railway.app/reference/resource-management)
 
+## Environment Variables Configuration
+
+### Frontend Variables
+```env
+VITE_FRONTEND_URL=${RAILWAY_PUBLIC_DOMAIN}
+VITE_API_URL_CLIENT=${RAILWAY_PUBLIC_DOMAIN}/api
+VITE_API_URL_SERVER=http://localhost:80/api
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_51...
+```
+
+### Backend Core Variables
+```env
+# Application Settings
+APP_KEY=base64:xxx                 # Generate with: echo "base64:$(openssl rand -base64 32)"
+APP_ENV=production
+APP_DEBUG=false
+APP_FRONTEND_URL=${RAILWAY_PUBLIC_DOMAIN}
+APP_CDN_URL=${RAILWAY_PUBLIC_DOMAIN}/storage
+APP_SAAS_MODE_ENABLED=true        # Set to false for non-SaaS deployments
+APP_SAAS_STRIPE_APPLICATION_FEE_PERCENT=1.5
+APP_DISABLE_REGISTRATION=false    # Set to true to disable new account registration
+
+# JWT Authentication
+JWT_SECRET=xxx                    # Generate with: echo "base64:$(openssl rand -base64 32)"
+
+# Logging and Queue
+LOG_CHANNEL=stderr
+QUEUE_CONNECTION=redis            # Use 'sync' for development, 'redis' for production
+```
+
+### Mail Configuration
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your-username
+MAIL_PASSWORD=your-password
+MAIL_FROM_ADDRESS=noreply@yourdomain.com
+MAIL_FROM_NAME="Hi.Events"
+```
+
+### Stripe Configuration
+```env
+STRIPE_PUBLIC_KEY=pk_test_51...
+STRIPE_SECRET_KEY=sk_test_51...
+STRIPE_WEBHOOK_SECRET=whsec_...    # Set webhook URL to: ${RAILWAY_PUBLIC_DOMAIN}/api/public/webhooks/stripe
+```
+
+### File Storage Configuration
+```env
+# Local Storage (Development)
+FILESYSTEM_PUBLIC_DISK=public
+FILESYSTEM_PRIVATE_DISK=local
+
+# S3 Storage (Recommended for Production)
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_DEFAULT_REGION=us-west-1
+AWS_PUBLIC_BUCKET=your-public-bucket
+AWS_PRIVATE_BUCKET=your-private-bucket
+FILESYSTEM_PUBLIC_DISK=s3-public   # Use this when AWS is configured
+FILESYSTEM_PRIVATE_DISK=s3-private # Use this when AWS is configured
+```
+
+### Database Configuration
+```env
+# Option 1: Using DATABASE_URL (Recommended for Railway)
+DATABASE_URL=${RAILWAY_POSTGRESQL_CONNECTION_URL}
+
+# Option 2: Individual Settings
+DB_CONNECTION=pgsql
+DB_HOST=postgres.railway.internal
+DB_PORT=5432
+DB_DATABASE=railway
+DB_USERNAME=postgres
+DB_PASSWORD=your-password
+```
+
+### Redis Configuration (Recommended for Production)
+```env
+# Option 1: Using REDIS_URL (Recommended for Railway)
+REDIS_URL=${RAILWAY_REDIS_CONNECTION_URL}
+
+# Option 2: Individual Settings
+REDIS_HOST=your-redis-host
+REDIS_PASSWORD=your-redis-password
+REDIS_USER=your-redis-username
+REDIS_PORT=6379
+```
+
+### Railway-Specific Variables
+These are automatically provided by Railway:
+```env
+RAILWAY_PUBLIC_DOMAIN
+RAILWAY_PRIVATE_DOMAIN
+RAILWAY_POSTGRESQL_CONNECTION_URL
+RAILWAY_REDIS_CONNECTION_URL
+```
+
+## Important Notes
+
+1. **Production Setup**
+   - Use Redis for queue connection
+   - Configure S3 or similar cloud storage
+   - Set up proper mail configuration
+   - Configure Stripe webhooks
+
+2. **Security**
+   - Never commit sensitive credentials to version control
+   - Use Railway's variable management system
+   - Regularly rotate secrets and keys
+
+3. **File Storage**
+   - Local storage is not recommended for production
+   - Use S3 or similar cloud storage to prevent data loss
+
+4. **Queue System**
+   - Use Redis for production deployments
+   - `sync` driver is only suitable for development
+
 ## Current Project Configuration
 
 ### Environment Variables Required (Based on Hi.Events Documentation)
