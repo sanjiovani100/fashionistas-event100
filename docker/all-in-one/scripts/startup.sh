@@ -26,6 +26,7 @@ php artisan route:clear
 php artisan view:clear
 
 echo "Creating storage link..."
+rm -f public/storage
 php artisan storage:link
 
 echo "Setting permissions..."

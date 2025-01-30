@@ -6,6 +6,14 @@
 - [Deploy Guide](https://docs.railway.app/deploy/deployments)
 - [Database Guide](https://docs.railway.app/databases/postgresql)
 
+## Hi.Events Documentation
+- [Hi.Events Documentation Home](https://hi.events/docs)
+- [Getting Started Guide](https://hi.events/docs/getting-started)
+- [Deployment Guide](https://hi.events/docs/getting-started/deploying)
+- [Local Development](https://hi.events/docs/getting-started/local-development)
+- [Environment Configuration](https://hi.events/docs/getting-started/environment-configuration)
+- [Database Setup](https://hi.events/docs/getting-started/database-setup)
+
 ## Key Configuration References
 
 ### Railway.toml Configuration
@@ -52,19 +60,33 @@
 
 ## Current Project Configuration
 
-### Environment Variables Required
+### Environment Variables Required (Based on Hi.Events Documentation)
 ```env
+# Core Application Settings
 APP_KEY=base64:xxx
 JWT_SECRET=xxx
 APP_ENV=production
 APP_DEBUG=false
+
+# Logging and Queue
 LOG_CHANNEL=stderr
 QUEUE_CONNECTION=sync
 MAIL_MAILER=log
+
+# File Storage
 FILESYSTEM_PUBLIC_DISK=public
 FILESYSTEM_PRIVATE_DISK=local
 APP_CDN_URL=${RAILWAY_PUBLIC_DOMAIN}/storage
 APP_FRONTEND_URL=${RAILWAY_PUBLIC_DOMAIN}
+
+# Database (Railway PostgreSQL)
+DATABASE_URL=postgresql://postgres:password@postgres.railway.internal:5432/railway
+
+# Additional Hi.Events Settings
+VITE_API_URL_CLIENT=${RAILWAY_PUBLIC_DOMAIN}/api
+VITE_API_URL_SERVER=http://localhost:80/api
+VITE_FRONTEND_URL=${RAILWAY_PUBLIC_DOMAIN}
+VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_key
 ```
 
 ### Health Check Configuration
