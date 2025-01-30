@@ -8,13 +8,35 @@ echo "Changed directory to /app/backend"
 
 echo "Checking environment variables..."
 echo "APP_KEY: ${APP_KEY:0:10}..."
-echo "DATABASE_URL exists: $(if [ -n "$DATABASE_URL" ]; then echo "yes"; else echo "no"; fi)"
+
+# Configure database connection
+if [ -n "$RAILWAY_POSTGRESQL_CONNECTION_URL" ]; then
+    echo "Using Railway PostgreSQL URL"
+    export DATABASE_URL="$RAILWAY_POSTGRESQL_CONNECTION_URL"
+elif [ -n "$DATABASE_URL" ]; then
+    echo "Using provided DATABASE_URL"
+else
+    echo "ERROR: No database connection URL found"
+    exit 1
+fi
+
+# Configure frontend URLs
+if [ -n "$RAILWAY_PUBLIC_DOMAIN" ]; then
+    echo "Setting up frontend URLs with RAILWAY_PUBLIC_DOMAIN"
+    export VITE_FRONTEND_URL="https://$RAILWAY_PUBLIC_DOMAIN"
+    export VITE_API_URL_CLIENT="https://$RAILWAY_PUBLIC_DOMAIN/api"
+    export APP_FRONTEND_URL="https://$RAILWAY_PUBLIC_DOMAIN"
+    export APP_CDN_URL="https://$RAILWAY_PUBLIC_DOMAIN/storage"
+fi
+
+echo "Database configuration:"
+echo "Host: $(echo $DATABASE_URL | sed -E 's/.*@([^:]+).*/\1/')"
 
 echo "Running database migrations..."
 if ! php artisan migrate --force; then
     echo "============================================"
     echo "ERROR: Migrations could not complete. Check the error above."
-    echo "Ensure DATABASE_URL is set."
+    echo "Database URL format should be: postgresql://user:password@host:5432/dbname"
     echo "============================================"
     exit 1
 fi

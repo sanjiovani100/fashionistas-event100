@@ -1,13 +1,11 @@
 [build]
-builder = "DOCKERFILE"
+builder = "dockerfile"
 dockerfilePath = "Dockerfile.all-in-one"
 
 [deploy]
 startCommand = "/startup.sh"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 300
-restartPolicyType = "ON_FAILURE"
+restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
-
-[env]
-PORT = "80"
+port = 80
